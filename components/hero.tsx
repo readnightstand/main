@@ -37,7 +37,7 @@ export function Hero() {
           Coming soon
         </p>
 
-        <p className="text-[clamp(48px,8vw,90px)] font-bold italic leading-none text-cream mb-4">
+        <p className="text-[clamp(56px,10vw,110px)] font-bold italic leading-none text-cream mb-4">
           nightstand
         </p>
 
