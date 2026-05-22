@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nightstand — Book recommendations that feel right</title>
+  <meta name="description" content="Nightstand is a conversational book recommendation engine for avid readers. Tell us how you want to feel, and we'll find the book that fits." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Nightstand — Book recommendations that feel right" />
+  <meta property="og:description" content="Tell us how you want to feel, and we'll find the book that fits." />
+  <meta property="og:url" content="https://readnightstand.com" />
+  <meta property="og:type" content="website" />
+
+  <!-- Security -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
+  <style>
+    /* ── Fonts ── */
+    @font-face {
+      font-family: "NyghtSerif";
+      src: url("fonts/NyghtSerif-Light.ttf") format("truetype");
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: "NyghtSerif";
+      src: url("fonts/NyghtSerif-LightItalic.ttf") format("truetype");
+      font-weight: 300; font-style: italic; font-display: swap;
+    }
+    @font-face {
+      font-family: "NyghtSerif";
+      src: url("fonts/NyghtSerif-Regular.ttf") format("truetype");
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: "NyghtSerif";
+      src: url("fonts/NyghtSerif-RegularItalic.ttf") format("truetype");
+      font-weight: 400; font-style: italic; font-display: swap;
+    }
+    @font-face {
+      font-family: "NyghtSerif";
+      src: url("fonts/NyghtSerif-Medium.ttf") format("truetype");
+      font-weight: 500; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: "NyghtSerif";
+      src: url("fonts/NyghtSerif-Bold.ttf") format("truetype");
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: "NyghtSerif";
+      src: url("fonts/NyghtSerif-Dark.ttf") format("truetype");
+      font-weight: 800; font-style: normal; font-display: swap;
+    }
+
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:       #24523C;
+      --green-dark:  #1a3929;
+      --green-deeper:#0f2018;
+      --green-light: #2e6b4f;
+      --cream:       #F5F0E8;
+      --gold:        #C9A96E;
+      --font:        "NyghtSerif", Georgia, "Times New Roman", serif;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--green-deeper);
+      color: var(--cream);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(ellipse at 50% 0%, var(--green-light) 0%, var(--green-dark) 45%, var(--green-deeper) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle noise texture */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.018'%3E%3Ccircle cx='10' cy='10' r='1'/%3E%3Ccircle cx='30' cy='50' r='1'/%3E%3Ccircle cx='60' cy='20' r='1'/%3E%3Ccircle cx='70' cy='70' r='1'/%3E%3Ccircle cx='45' cy='35' r='1'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 24px 0;
+    }
+
+    @media (min-width: 768px) {
+      .nav { padding: 36px 48px 0; }
+    }
+
+    .nav-logo {
+      height: 32px;
+      width: auto;
+    }
+
+    @media (min-width: 768px) {
+      .nav-logo { height: 38px; }
+    }
+
+    .nav-link {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(245, 240, 232, 0.5);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: rgba(245, 240, 232, 0.8); }
+
+    /* ── Hero body ── */
+    .hero-body {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 24px 32px;
+    }
+
+    @media (min-width: 768px) {
+      .hero-body { padding: 64px 48px 40px; }
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(201, 169, 110, 0.12);
+      border: 1px solid rgba(201, 169, 110, 0.35);
+      border-radius: 100px;
+      padding: 6px 16px;
+      margin-bottom: 28px;
+    }
+
+    .headline {
+      font-size: clamp(36px, 6vw, 68px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.15;
+      color: var(--cream);
+      max-width: 800px;
+    }
+
+    .subhead {
+      margin-top: 20px;
+      font-size: clamp(16px, 2vw, 19px);
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245, 240, 232, 0.65);
+      max-width: 520px;
+    }
+
+    /* ── Email form ── */
+    .form-wrap {
+      margin-top: 36px;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width: 480px) {
+      .form-row { flex-direction: row; }
+    }
+
+    .email-input {
+      flex: 1;
+      min-height: 50px;
+      padding: 13px 16px;
+      font-family: var(--font);
+      font-size: 16px;            /* ≥16px prevents iOS zoom */
+      font-weight: 300;
+      color: var(--cream);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .email-input::placeholder { color: rgba(245, 240, 232, 0.38); }
+    .email-input:focus {
+      border-color: rgba(201, 169, 110, 0.5);
+      box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.12);
+    }
+
+    .submit-btn {
+      min-height: 50px;
+      padding: 13px 22px;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--cream);
+      background: var(--green);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.1s;
+      -webkit-appearance: none;
+    }
+    .submit-btn:hover  { background: var(--green-light); }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:focus-visible {
+      outline: 2px solid rgba(201, 169, 110, 0.6);
+      outline-offset: 2px;
+    }
+
+    .form-consent {
+      margin-top: 12px;
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(245, 240, 232, 0.35);
+    }
+    .form-consent a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.2s;
+    }
+    .form-consent a:hover { color: rgba(245, 240, 232, 0.6); }
+
+    /* Formspree SDK — success and error states */
+    [data-fs-success] {
+      display: none;
+      margin-top: 8px;
+      padding: 16px 20px;
+      background: rgba(36, 82, 60, 0.3);
+      border: 1px solid rgba(36, 82, 60, 0.5);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(245, 240, 232, 0.9);
+    }
+    [data-fs-error]:not(:empty) {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 300;
+      color: #fca5a5; /* soft red legible on dark green */
+    }
+
+    /* ── Scroll arrow ── */
+    .scroll-arrow {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      padding-bottom: 28px;
+    }
+
+    .scroll-arrow a {
+      color: rgba(245, 240, 232, 0.25);
+      text-decoration: none;
+      animation: bounce 2s ease-in-out infinite;
+      transition: color 0.2s;
+    }
+    .scroll-arrow a:hover { color: rgba(245, 240, 232, 0.5); }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(6px); }
+    }
+
+    /* ── Feature section ── */
+    .features {
+      padding: 72px 24px;
+      background: linear-gradient(to bottom, var(--green-deeper) 0%, var(--green-dark) 50%, var(--green-deeper) 100%);
+    }
+
+    @media (min-width: 768px) {
+      .features { padding: 96px 48px; }
+    }
+
+    .features-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .features-heading {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .features-heading h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 12px;
+    }
+
+    .features-heading p {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(245, 240, 232, 0.55);
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .cards { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .card {
+      padding: 28px 24px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 12px;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .card:hover {
+      border-color: rgba(201, 169, 110, 0.28);
+      background: rgba(255, 255, 255, 0.065);
+    }
+
+    .card-icon {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 16px;
+      color: rgba(201, 169, 110, 0.65);
+    }
+
+    .card h3 {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: rgba(245, 240, 232, 0.55);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 20px 24px;
+      background: var(--green-deeper);
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(245, 240, 232, 0.28);
+    }
+
+    .footer a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.2s;
+    }
+    .footer a:hover { color: rgba(245, 240, 232, 0.55); }
+
+    /* ── Privacy page (shown when ?page=privacy) ── */
+    .privacy-page {
+      display: none;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+
+    .privacy-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(245, 240, 232, 0.45);
+      text-decoration: none;
+      margin-bottom: 36px;
+      transition: color 0.2s;
+    }
+    .privacy-back:hover { color: rgba(245, 240, 232, 0.7); }
+
+    .privacy-page h1 {
+      font-size: 34px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 6px;
+    }
+    .privacy-date {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(245, 240, 232, 0.35);
+      margin-bottom: 40px;
+    }
+    .privacy-section { margin-bottom: 32px; }
+    .privacy-section h2 {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .privacy-section p {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(245, 240, 232, 0.65);
+    }
+    .privacy-section a {
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      color: rgba(245, 240, 232, 0.85);
+      transition: color 0.2s;
+    }
+    .privacy-section a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN PAGE
+  ════════════════════════════════════════════ -->
+  <div id="main-page">
+
+    <!-- HERO -->
+    <section class="hero" aria-label="Nightstand — coming soon">
+
+      <nav class="nav" aria-label="Site navigation">
+        <img
+          src="logos/2026-05-12-nightstand-logo-wordmark.svg"
+          alt="Nightstand"
+          class="nav-logo"
+          width="160"
+          height="42"
+        />
+        <a href="#learn-more" class="nav-link">Learn more</a>
+      </nav>
+
+      <div class="hero-body">
+        <p class="eyebrow">Coming soon</p>
+
+        <h1 class="headline">
+          The book that&#8217;s right for you,<br>right now.
+        </h1>
+
+        <p class="subhead">
+          Nightstand is a recommendation engine for avid readers&#8202;&#8202;—&#8202;&#8202;not based
+          on what&#8217;s popular, but on how you want to feel.
+        </p>
+
+        <!-- Email capture form — powered by Formspree -->
+        <div class="form-wrap" role="region" aria-label="Early access sign-up">
+          <!-- Success message: shown by Formspree SDK after submission -->
+          <div data-fs-success role="status" aria-live="polite">
+            You&#8217;re on the list. We&#8217;ll be in touch when Nightstand is ready.
+          </div>
+          <!-- Form-level error (e.g. network failure) -->
+          <div data-fs-error aria-live="polite"></div>
+
+          <form id="signup-form">
+            <div class="form-row">
+              <input
+                type="email"
+                name="email"
+                class="email-input"
+                placeholder="your@email.com"
+                required
+                autocomplete="email"
+                aria-label="Email address"
+                data-fs-field
+              />
+              <button type="submit" class="submit-btn" data-fs-submit-btn>
+                Get early access
+              </button>
+            </div>
+            <!-- Field-level email error (e.g. invalid format caught by Formspree) -->
+            <span data-fs-error="email" class="form-error" aria-live="polite"></span>
+            <p class="form-consent">
+              No spam, ever. Read our
+              <a href="#privacy" id="privacy-link">privacy policy</a>.
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <div class="scroll-arrow">
+        <a href="#learn-more" aria-label="Scroll to learn more">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.5"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <polyline points="19 12 12 19 5 12"/>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- FEATURE SECTION -->
+    <section class="features" id="learn-more" aria-label="How Nightstand works">
+      <div class="features-inner">
+
+        <div class="features-heading">
+          <h2>Recommendations that feel right</h2>
+          <p>Nightstand matches tone, pacing, and emotional register&#8202;&#8202;—&#8202;&#8202;not just genre.</p>
+        </div>
+
+        <div class="cards">
+
+          <article class="card">
+            <svg class="card-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <h3>The Sommelier</h3>
+            <p>
+              Tell us how you want to feel&#8202;&#8202;—&#8202;&#8202;not a genre, not a title.
+              Nightstand asks a few questions and finds the book that fits
+              the mood you&#8217;re in right now.
+            </p>
+          </article>
+
+          <article class="card">
+            <svg class="card-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            <h3>Curated reading lists</h3>
+            <p>
+              Hand-picked recommendations organized by feeling, not genre.
+              For the reader who just finished a 900-page epic and needs
+              something short. For thrillers with actual prose.
+            </p>
+          </article>
+
+          <article class="card">
+            <svg class="card-icon" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <rect width="20" height="16" x="2" y="4" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+            <h3>The Anti-Algorithm</h3>
+            <p>
+              One book, once a week, chosen as if a well-read friend
+              thought of you specifically. A note on why this book, why now.
+              Nothing curated by an algorithm.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>
+        &copy; <span id="year"></span> Nightstand, LLC
+        &nbsp;&middot;&nbsp;
+        <a href="#privacy" id="footer-privacy-link">Privacy policy</a>
+      </p>
+    </footer>
+
+  </div><!-- /main-page -->
+
+
+  <!-- ═══════════════════════════════════════════
+       PRIVACY POLICY PAGE (same-page, JS-toggled)
+  ════════════════════════════════════════════ -->
+  <div id="privacy-page" class="privacy-page" role="main" aria-label="Privacy policy">
+
+    <a href="#" id="privacy-back" class="privacy-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round"
+           aria-hidden="true">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Back to Nightstand
+    </a>
+
+    <h1>Privacy Policy</h1>
+    <p class="privacy-date">Effective May 21, 2026</p>
+
+    <div class="privacy-section">
+      <h2>Who we are</h2>
+      <p>
+        Nightstand, LLC operates Nightstand at readnightstand.com&#8202;&#8202;—&#8202;&#8202;a book
+        recommendation service. Questions about this policy can be directed to
+        <a href="mailto:hello@readnightstand.com">hello@readnightstand.com</a>.
+      </p>
+    </div>
+
+    <div class="privacy-section">
+      <h2>What we collect</h2>
+      <p>
+        When you sign up for early access, we collect your email address. That&#8217;s it.
+        We don&#8217;t collect your name, location, or any other personal information
+        unless you choose to provide it.
+      </p>
+    </div>
+
+    <div class="privacy-section">
+      <h2>How we use it</h2>
+      <p>
+        Your email address is used solely to contact you about Nightstand&#8202;&#8202;—&#8202;&#8202;to
+        let you know when the product launches, and to share updates we think
+        you&#8217;d care about. We will not sell, rent, or share your email address
+        with any third party for marketing purposes.
+      </p>
+    </div>
+
+    <div class="privacy-section">
+      <h2>How we store it</h2>
+      <p>
+        Email addresses are stored with
+        <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Formspree</a>,
+        an email form service. Their privacy practices are governed by their own policy.
+      </p>
+    </div>
+
+    <div class="privacy-section">
+      <h2>Unsubscribing</h2>
+      <p>
+        Every email we send includes an unsubscribe link. You can also email
+        <a href="mailto:hello@readnightstand.com">hello@readnightstand.com</a>
+        at any time to have your address removed.
+      </p>
+    </div>
+
+    <div class="privacy-section">
+      <h2>Changes to this policy</h2>
+      <p>
+        If we make material changes to how we handle your data, we&#8217;ll update this
+        page and note the new effective date. For significant changes, we&#8217;ll
+        send an email to the address on file.
+      </p>
+    </div>
+
+    <div class="privacy-section">
+      <h2>Contact</h2>
+      <p>
+        Questions or requests regarding your data:
+        <a href="mailto:hello@readnightstand.com">hello@readnightstand.com</a>
+      </p>
+    </div>
+
+  </div><!-- /privacy-page -->
+
+
+  <script>
+    // ── Year in footer ──────────────────────────────────
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ── Privacy page toggle ─────────────────────────────
+    var mainPage    = document.getElementById("main-page");
+    var privacyPage = document.getElementById("privacy-page");
+
+    function showPrivacy(e) {
+      if (e) e.preventDefault();
+      mainPage.style.display    = "none";
+      privacyPage.style.display = "block";
+      window.scrollTo(0, 0);
+      document.title = "Privacy Policy — Nightstand";
+    }
+
+    function showMain(e) {
+      if (e) e.preventDefault();
+      privacyPage.style.display = "none";
+      mainPage.style.display    = "block";
+      window.scrollTo(0, 0);
+      document.title = "Nightstand — Book recommendations that feel right";
+    }
+
+    document.getElementById("privacy-link").addEventListener("click", showPrivacy);
+    document.getElementById("footer-privacy-link").addEventListener("click", showPrivacy);
+    document.getElementById("privacy-back").addEventListener("click", showMain);
+
+    // Handle direct #privacy hash
+    if (window.location.hash === "#privacy") showPrivacy();
+
+    // ── Formspree SDK init ──────────────────────────────
+    window.formspree = window.formspree || function () {
+      (formspree.q = formspree.q || []).push(arguments);
+    };
+    formspree('initForm', { formElement: '#signup-form', formId: 'xzdwrwaj' });
+  </script>
+  <!-- Formspree Ajax SDK — handles submission, errors, and success state -->
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+</body>
+</html>
